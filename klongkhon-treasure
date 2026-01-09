@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>🗺️ ภารกิจตามล่าหาสมบัติ ณ คลองโคน</title>
+<style>
+body {
+  font-family: "Prompt", sans-serif;
+  background: #f2efe9;
+  padding: 20px;
+}
+h1 {
+  text-align: center;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+.polaroid {
+  background: white;
+  padding: 10px 10px 25px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  text-align: center;
+}
+.polaroid img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  background: #ddd;
+}
+.caption {
+  margin-top: 8px;
+  font-size: 14px;
+  font-weight: bold;
+}
+.controls button {
+  margin: 4px;
+  font-size: 12px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🗺️ ภารกิจตามล่าหาสมบัติ ณ คลองโคน</h1>
+
+<div class="grid" id="grid"></div>
+
+<script>
+const stations = [
+"📍 สถานีที่ 1: ผู้พิทักษ์สายน้ำ",
+"📍 สถานีที่ 2: พาหนะลอยฟ้า",
+"📍 สถานีที่ 3: ศิลปะจากโคลน",
+"📍 สถานีที่ 4: ยอดนักสาน",
+"📍 สถานีที่ 5: เชฟขนมไทย",
+"📍 สถานีที่ 6: เตรียมพร้อมออกทะเล",
+"📍 สถานีที่ 7: ป้ายปริศนา",
+"📍 สถานีที่ 8: ม้านั่งสีรุ้ง",
+"📍 สถานีที่ 9: แสงสว่างจากอดีต",
+"📍 สถานีที่ 10: สองล้อรอเจ้าของ",
+"📍 สถานีที่ 11: เครื่องย้อนเวลา",
+"📍 สถานีที่ 12: ผู้พิทักษ์สีแดง"
+];
+
+const grid = document.getElementById("grid");
+
+stations.forEach((title, i) => {
+  const div = document.createElement("div");
+  div.className = "polaroid";
+
+  div.innerHTML = `
+    <img id="img${i}">
+    <input type="file" accept="image/*" onchange="loadImage(event, ${i})">
+    <div class="controls">
+      <button onclick="deleteImage(${i})">🗑️ ลบ</button>
+      <button onclick="downloadImage(${i}, 'png')">⬇️ PNG</button>
+      <button onclick="downloadImage(${i}, 'jpeg')">⬇️ JPEG</button>
+    </div>
+    <div class="caption">${title}</div>
+  `;
+  grid.appendChild(div);
+});
+
+function loadImage(event, index) {
+  const img = document.getElementById("img" + index);
+  img.src = URL.createObjectURL(event.target.files[0]);
+}
+
+function deleteImage(index) {
+  document.getElementById("img" + index).src = "";
+}
+
+function downloadImage(index, type) {
+  const img = document.getElementById("img" + index);
+  if (!img.src) return alert("ยังไม่มีรูปภาพ");
+
+  const canvas = document.createElement("canvas");
+  canvas.width = img.naturalWidth;
+  canvas.height = img.naturalHeight;
+  const ctx = canvas.getContext("2d");
+  ctx.drawImage(img, 0, 0);
+
+  const link = document.createElement("a");
+  link.download = `station_${index+1}.${type}`;
+  link.href = canvas.toDataURL(`image/${type}`);
+  link.click();
+}
+</script>
+
+</body>
+</html>
